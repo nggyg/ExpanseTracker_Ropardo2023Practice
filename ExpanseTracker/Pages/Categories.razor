@@ -3,24 +3,29 @@
 
 <h3>Categories</h3>
 
-<table>
+<table><!--table instead of list for organized layout-->
     @foreach(var cat in Cats)
     {
         <tr>
             <td>@cat.Id. @cat.Name</td>
-            <td></td>
-            <td><button @onclick="()=>remove_cat(cat)">delete</button></td>
+            <td><button @onclick="()=>remove_cat(cat)">delete</button></td> <!--lambda fro function with parameter-->
         </tr>
     }
 </table>
+<h3>&nbsp;</h3><!--empty space that's not ignored-->
 
-<input placeholder="New     Category" @bind="New_cat" />
+<input placeholder="New Category" @bind="New_cat" />
 <button @onclick="add_cat">Add Category</button>
 
 @code {
     private List<Category> Cats = new List<Category>();
     private int New_id = 1;
     public string? New_cat;
+    /*  can't call functionf from outside function definition in @code
+    Cats.Add(new (get_new_id(), "Food"));
+    Cats.Add(new (get_new_id(), "House"));
+    Cats.Add(new (get_new_id(), "Entertainment"));
+    */
     public void loadDefault()
     {
         Cats.Add(new(get_new_id(), "Food"));
@@ -45,7 +50,7 @@
     {
         Cats.Remove(todo);
     }
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
     {
         loadDefault();
     }
