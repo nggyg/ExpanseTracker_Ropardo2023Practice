@@ -8,6 +8,14 @@ h1:focus {
     outline: none;
 }
 
+ul {
+    list-style-type: none;
+}
+
+td{
+    padding-right: 8px;
+}
+
 h10 {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: black;

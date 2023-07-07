@@ -3,8 +3,50 @@
 
 <h3>Categories</h3>
 
+<table>
+    @foreach(var cat in cats)
+    {
+        <tr>
+            <td>@cat.id. @cat.name</td>
+            <td></td>
+            <td><button @onclick="()=>remove_cat(cat)">delete</button></td>
+        </tr>
+    }
+</table>
+
+<input placeholder="New     Category" @bind="new_cat" />
+<button @onclick="add_cat">Add Category</button>
+
 @code {
-    List<Category> cats = new List<Category>();
-    Category cat1 = new Category("bool");
-    cat1.Add();
+    private List<Category> cats = new List<Category>();
+    private int new_id = 1;
+    public string new_cat="";
+    public void loadDefault()
+    {
+        cats.Add(new(get_new_id(), "Food"));
+        cats.Add(new(get_new_id(), "House"));
+        cats.Add(new(get_new_id(), "Entertainment"));
+    }
+
+    private int get_new_id()
+    {
+        return new_id++;
+    }
+    public void add_cat()
+    {
+        if (!string.IsNullOrWhiteSpace(new_cat))
+        {
+            cats.Add(new(get_new_id(), new_cat));
+            new_cat = "";
+        }
+
+    }
+    public void remove_cat(Category todo)
+    {
+        cats.Remove(todo);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        loadDefault();
+    }
 }

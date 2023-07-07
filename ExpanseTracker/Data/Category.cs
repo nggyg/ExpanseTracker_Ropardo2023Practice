@@ -2,10 +2,11 @@
 {
     public class Category
     {
-        private int id { get; set; }
-        private string name { get; set; }
-        public Category(string name)
+        public int id { get; set; }
+        public string name { get; set; }
+        public Category(int id,string name)
         {
+            this.id = id;
             this.name = name;
         }
     }
