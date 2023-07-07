@@ -4,46 +4,46 @@
 <h3>Categories</h3>
 
 <table>
-    @foreach(var cat in cats)
+    @foreach(var cat in Cats)
     {
         <tr>
-            <td>@cat.id. @cat.name</td>
+            <td>@cat.Id. @cat.Name</td>
             <td></td>
             <td><button @onclick="()=>remove_cat(cat)">delete</button></td>
         </tr>
     }
 </table>
 
-<input placeholder="New     Category" @bind="new_cat" />
+<input placeholder="New     Category" @bind="New_cat" />
 <button @onclick="add_cat">Add Category</button>
 
 @code {
-    private List<Category> cats = new List<Category>();
-    private int new_id = 1;
-    public string new_cat="";
+    private List<Category> Cats = new List<Category>();
+    private int New_id = 1;
+    public string? New_cat;
     public void loadDefault()
     {
-        cats.Add(new(get_new_id(), "Food"));
-        cats.Add(new(get_new_id(), "House"));
-        cats.Add(new(get_new_id(), "Entertainment"));
+        Cats.Add(new(get_new_id(), "Food"));
+        Cats.Add(new(get_new_id(), "House"));
+        Cats.Add(new(get_new_id(), "Entertainment"));
     }
-
+      
     private int get_new_id()
     {
-        return new_id++;
+        return New_id++;
     }
     public void add_cat()
     {
-        if (!string.IsNullOrWhiteSpace(new_cat))
+        if (!string.IsNullOrWhiteSpace(New_cat))
         {
-            cats.Add(new(get_new_id(), new_cat));
-            new_cat = "";
+            Cats.Add(new(get_new_id(), New_cat));
+            New_cat = string.Empty;
         }
 
     }
     public void remove_cat(Category todo)
     {
-        cats.Remove(todo);
+        Cats.Remove(todo);
     }
     protected override async Task OnInitializedAsync()
     {

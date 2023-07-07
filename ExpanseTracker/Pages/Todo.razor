@@ -3,10 +3,10 @@
 @using System.IO
 <PageTitle>Todo List</PageTitle>
 <h2>Todo List</h2>
-<h10>Tasks left: (@todos.Count(todo => !todo.IsDone))</h10>
+<h10>Tasks left: (@Todos.Count(todo => !todo.IsDone))</h10>
 
 <ul>
-    @foreach (var todo in todos)
+    @foreach (var todo in Todos)
     {
         <li>
             <input type="checkbox" @bind="todo.IsDone" />
@@ -15,19 +15,19 @@
     }
 </ul>
 
-<input placeholder="Something todo" @bind="newTitle" />
+<input placeholder="Something todo" @bind="New_title" />
 
 <button @onclick="addNewTodo">Add todo</button>
 
 @code {
-    private List<TodoItem> todos = new();
-    private string? newTitle;
+    private List<TodoItem> Todos = new();
+    private string? New_title;
     public void addNewTodo()
     {
-        if (!string.IsNullOrWhiteSpace(newTitle))
+        if (!string.IsNullOrWhiteSpace(New_title))
         {
-            todos.Add(new TodoItem { Title = newTitle });
-            newTitle = string.Empty;
+            Todos.Add(new TodoItem { Title = New_title });
+            New_title = string.Empty;
         }
     }
 }
