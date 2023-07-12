@@ -44,7 +44,9 @@
     {
         if (!string.IsNullOrWhiteSpace(New_cat))
         {
-            Cats.Add(new(get_new_id(), New_cat));
+            Category New_Cat = new(get_new_id(), New_cat);
+            Cats.Add(New_Cat);
+            CategoryService.addCategory(New_Cat);
             New_cat = string.Empty;
         }
 
@@ -52,11 +54,16 @@
     public void remove_cat(Category todo)
     {
         Cats.Remove(todo);
+        CategoryService.removeCategory(todo);
     }
 
     private void loadDefault2()
     {
         Cats = CategoryService.getCategories();
+        var query = CategoryService._context.Categories.Max(c => c.Id);
+        Console.WriteLine(query);
+        New_id = query+1;
+        //New_id=
     }
 
     protected override async Task OnInitializedAsync() //process to run when page is loaded

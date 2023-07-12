@@ -22,5 +22,9 @@ namespace ExpanseTracker.Data
                 new Category(6,"House"),
             });
         }
+        public void add(Category category)
+        {
+            Categories.Add(category);
+        }
     }
 }
