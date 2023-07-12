@@ -1,6 +1,8 @@
 ﻿@page "/categories"
 @using ExpanseTracker.Data
 @using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services
+@inject CategoryService CategoryService;
 
 <h3>Categories</h3>
 
@@ -33,7 +35,7 @@
         Cats.Add(new(get_new_id(), "House"));
         Cats.Add(new(get_new_id(), "Entertainment"));
     }
-      
+
     private int get_new_id()
     {
         return New_id++;
@@ -51,8 +53,15 @@
     {
         Cats.Remove(todo);
     }
-    /*protected override async Task OnInitializedAsync() //process to run when page is loaded
+
+    private void loadDefault2()
     {
-        loadDefault();
-    }*/
+        Cats = CategoryService.getCategories();
+    }
+
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        //loadDefault();
+        loadDefault2();
+    }
 }

@@ -1,4 +1,6 @@
-namespace ExpanseTracker.Data
+using ExpanseTracker.Data;
+
+namespace ExpanseTracker.Services
 {
     public class WeatherForecastService
     {
