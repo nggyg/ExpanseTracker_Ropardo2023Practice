@@ -1,5 +1,6 @@
 ﻿@page "/categories"
 @using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
 
 <h3>Categories</h3>
 
@@ -50,8 +51,8 @@
     {
         Cats.Remove(todo);
     }
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    /*protected override async Task OnInitializedAsync() //process to run when page is loaded
     {
         loadDefault();
-    }
+    }*/
 }
