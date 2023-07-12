@@ -3,6 +3,7 @@ using System;
 using ExpanseTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpanseTracker.Migrations
 {
     [DbContext(typeof(ExpanseTrackerContext))]
-    partial class ExpanseTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20230712124649_AddExpenseTable")]
+    partial class AddExpenseTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,85 +113,6 @@ namespace ExpanseTracker.Migrations
                             Date = new DateTime(2022, 7, 17, 21, 0, 0, 0, DateTimeKind.Utc),
                             Planned = true,
                             Title = "Hawaii"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Amount = 3.5,
-                            CategoryId = 1,
-                            Date = new DateTime(2023, 7, 17, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Planned = false,
-                            Title = "Bubble Gum"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Amount = 20.0,
-                            CategoryId = 5,
-                            Date = new DateTime(2012, 7, 17, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Planned = true,
-                            Title = "Sun glasses"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Amount = 25.0,
-                            CategoryId = 4,
-                            Date = new DateTime(2031, 7, 17, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Planned = false,
-                            Title = "Calculator"
-                        });
-                });
-
-            modelBuilder.Entity("ExpanseTracker.Data.Models.Income", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("double precision");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Income");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Amount = 2500.0,
-                            Date = new DateTime(2022, 1, 31, 22, 0, 0, 0, DateTimeKind.Utc),
-                            Title = "Ropardo_January",
-                            Type = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Amount = 0.40000000000000002,
-                            Date = new DateTime(2022, 9, 20, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Title = "Cash on the street",
-                            Type = 3
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Amount = 500.0,
-                            Date = new DateTime(2012, 9, 14, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Title = "Erasmus",
-                            Type = 1
                         });
                 });
 

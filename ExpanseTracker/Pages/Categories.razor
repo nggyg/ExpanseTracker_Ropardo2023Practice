@@ -10,7 +10,7 @@
     @foreach(var cat in Cats)
     {
         <tr>
-            <td>@cat.Id. @cat.Name</td>
+            <td>@cat.Id @cat.Name</td>
             <td><button @onclick="()=>remove_cat(cat)">delete</button></td> <!--lambda fro function with parameter-->
         </tr>
     }

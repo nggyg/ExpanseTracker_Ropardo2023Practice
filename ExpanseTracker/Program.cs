@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ExpanseTrackerContext>(options =>
 
 var app = builder.Build();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

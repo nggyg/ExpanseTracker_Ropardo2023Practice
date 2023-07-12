@@ -3,6 +3,7 @@ using System;
 using ExpanseTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpanseTracker.Migrations
 {
     [DbContext(typeof(ExpanseTrackerContext))]
-    partial class ExpanseTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20230712134155_AddIncomeTable")]
+    partial class AddIncomeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
