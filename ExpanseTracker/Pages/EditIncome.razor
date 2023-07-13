@@ -1,0 +1,28 @@
+﻿@page "/editincome/{incomeId:int}"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject IncomeService IService;
+@inject NavigationManager NavMag;
+
+<h3>EditIncome</h3>
+
+<form @onsubmit="EdIncome">
+    <IncomeForm Inc="Inc"></IncomeForm>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@code {
+    [Parameter]
+    public int incomeId{ get; set; }
+    private Income Inc = new();
+    protected override void OnInitialized()
+    {
+        Inc = IService.getIncome(incomeId);
+    }
+    public void EdIncome()
+    {
+        IService.updateIncome(Inc);
+        NavMag.NavigateTo("/incomes");
+    }
+}

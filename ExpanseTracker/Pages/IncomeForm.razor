@@ -1,0 +1,77 @@
+﻿@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject IncomeService IService;
+
+<h3>IncomeForm</h3>
+
+<table>
+    <tr>
+        <td>Title</td>
+        <td><input type="text" placeholder="@NInc.Title" @bind="NInc.Title"></td>
+    </tr>
+    <tr>
+        <td>Date</td>
+        <td><input type="date" placeholder="@NInc.Date" @bind="NInc.Date"></td>
+    </tr>
+    <tr>
+        <td>Amount</td>
+        <td><input type="number" placeholder="@NInc.Amount" @bind="NInc.Amount"></td>
+    </tr>
+    <tr>
+        <td align="justify">Type</td>
+        <td>
+            <InputSelect id="Type" @bind-Value="@NInc.Type">
+                @foreach (var typ in IncomeType.GetValues(typeof(IncomeType)))
+                {
+                    <option value="@typ">@typ.ToString()</option>
+                }
+            </InputSelect>
+        </td>
+    </tr>
+</table>
+
+
+
+@code {
+    [Parameter]
+    public Income? Inc{ get; set; }
+    public List<Income> Incs = new List<Income>();
+    public Income NInc = new();
+    public int New_id = 1;
+
+    private int get_new_id()
+    {
+        return New_id++;
+    }
+    public void addupdate()
+    {
+        if (!string.IsNullOrWhiteSpace(NInc.Title))
+        {
+            if (Inc.isEmpty()) //add
+            {
+                Console.WriteLine("Running Add...");
+                Income i = new(get_new_id(), NInc.Title, NInc.Date, NInc.Amount, NInc.Type);
+                IService.addIncome(i);
+            }
+            else //update
+            {
+                Console.WriteLine("Running Update...");
+                Income i = new(get_new_id(), NInc.Title, NInc.Date, NInc.Amount, NInc.Type);
+                IService.updateIncome(i);
+            }
+        }
+    }
+    private void loadDefault()
+    {
+        Incs = IService.getIncomes();
+        var query = IService._context.Incomes.Max(c => c.Id);
+        New_id = query + 1;
+    }
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        NInc = Inc;
+        NInc.Date = DateTime.UtcNow;
+        loadDefault();
+    }
+}

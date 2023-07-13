@@ -1,0 +1,57 @@
+﻿@page "/incomes"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject IncomeService IService;
+@inject NavigationManager NavManager;
+
+<h3>Incomes</h3>
+<table>
+    @foreach(var inc in Incs)
+    {
+        <tr>
+            <td>@inc.Id</td>
+            <td>@inc.Title</td>
+            <td>@inc.Date.ToString("dd-mm-yyyy")</td>
+            <td>@inc.Amount $</td>
+            <td>@inc.Type</td>
+            <td><button @onclick="()=>remove_inc(inc)">Delete</button></td>
+            <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
+        </tr>
+    }
+</table>
+<button @onclick="goToAdd">Add Income</button>
+
+@code {
+    private List<Income> Incs = new List<Income>();
+    private int New_id = 1;
+
+    private int get_new_id() => New_id++;
+
+    public void goToEdit(int id)
+    {
+        NavManager.NavigateTo("/editincome/" + id);
+    }
+
+    public void goToAdd()
+    {
+        NavManager.NavigateTo("/incomes/new");
+    }
+    public void remove_inc(Income todo)
+    {
+        Incs.Remove(todo);
+        IService.removeIncome(todo);
+    }
+    
+    private void loadDefault()
+    {
+        Incs = IService.getIncomes().OrderBy(e => e.Id).ToList();
+        var query = IService._context.Expenses.Max(c => c.Id);
+        New_id = query + 1;
+    }
+
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        loadDefault();
+    }
+}

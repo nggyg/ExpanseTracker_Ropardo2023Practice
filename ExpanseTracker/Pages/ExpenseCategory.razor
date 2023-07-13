@@ -1,0 +1,48 @@
+﻿@page "/expensecategory"
+@page "/expensecategory/{CatId:int}"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject ExpenseService EService;
+@inject CategoryService CService;
+
+<h3>ExpenseCategory</h3>
+<InputSelect id="Category" @bind-Value="@CatId">
+    @foreach (var cat in Cats)
+    {
+        <option value="@cat.Id">@cat.Name</option>
+    }
+</InputSelect>
+<table>
+    @foreach(var exp in Exps)
+    {
+        @if (@exp.CategoryId == @CatId)
+        {
+            <tr>
+                <td>@exp</td>
+                <td><button @onclick="()=>remove_exp(exp)">Delete</button></td>
+            </tr>
+        }
+    }
+</table>
+
+@code {
+    [Parameter]
+    public int? CatId { get; set; } = 0;
+    public List<Category> Cats = new List<Category>();
+    public List<Expense> Exps = new List<Expense>();
+    public void remove_exp(Expense todo)
+    {
+        Exps.Remove(todo);
+        EService.removeExpense(todo);
+    }
+    private void loadDefault()
+    {
+        Cats = CService.getCategories();
+        Exps = EService.getExpenses();
+    }
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        loadDefault();
+    }
+}

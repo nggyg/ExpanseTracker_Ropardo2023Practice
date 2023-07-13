@@ -3,6 +3,7 @@
 @using ExpanseTracker.Services;
 @inject ExpenseService EService;
 @inject CategoryService CService;
+@inject NavigationManager NavMag;
 
 <table>
     <tr>
@@ -24,34 +25,25 @@
     <tr>
         <td align="justify">Category</td>
         <td>
-            <InputSelect id="Categpry" @bind-Value="@NExp.CategoryId">
+            <InputSelect id="Category" @bind-Value="@NExp.CategoryId">
                 @foreach(var cat in Cats)
                 {
                     <option value="@cat.Id">@cat.Name</option>
                 }
             </InputSelect>
-            <!--
-            <table>
-                @foreach (var cat in Cats)
-                {
-                    <tr><td><input type="radio" name="1" checked="(@cat.Id==@NExp.CategoryId)" @onchange="() => setCat(cat.Id)">@cat.Name</td></tr>
-                }
-            </table>
-            -->
         </td>
     </tr>
 </table>
-<h1>@NExp</h1>
-<h1>@Exp</h1>
-<button @onclick="addupdate">Save</button>
+
+<!--<button @onclick="addupdate">Save</button>-->
 
 @code {
     [Parameter]
     public Expense? Exp{ get; set; }
     public List<Category> Cats = new List<Category>();
-    public List<Expense> Exps = new List<Expense>();
     public Expense NExp = new();
     public int New_id = 1;
+    public string operation = "not yet decided";
 
     public void setCat(int id)
     {
@@ -61,30 +53,10 @@
     {
         return New_id++;
     }
-    public void addupdate()
-    {
-        if (!string.IsNullOrWhiteSpace(NExp.Title))
-        {
-            if (Exp.isEmpty()) //add
-            {
-                Console.WriteLine("Running Add...");
-                Expense e = new Expense(get_new_id(), NExp.Title, DateTime.Parse(NExp.Date.ToString()), NExp.Amount, NExp.Planned);
-                e.assignContetCategory(CService._context, NExp.CategoryId);
-                EService.addExpense(e);
-            }
-            else //update
-            {
-                Console.WriteLine("Running Update...");
-                Expense e = new Expense(NExp.Id, NExp.Title, DateTime.Parse(NExp.Date.ToString()), NExp.Amount, NExp.Planned);
-                e.assignContetCategory(CService._context, NExp.CategoryId);
-                EService.updateExpense(e);
-            }
-        }
-    }
+
     private void loadDefault()
     {
         Cats = CService.getCategories();
-        Exps = EService.getExpenses();
         var query = EService._context.Expenses.Max(c => c.Id);
         New_id = query + 1;
     }

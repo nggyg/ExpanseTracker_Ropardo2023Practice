@@ -38,20 +38,9 @@
 @code {
     private List<Expense> Exps = new List<Expense>();
     private int New_id = 1;
-    public string? New_exp;
 
     private int get_new_id() => New_id++;
-    public void add_exp()
-    {
-        if (!string.IsNullOrWhiteSpace(New_exp))
-        {
-            //Expense New_Cat = new(get_new_id(), New_exp);
-            //Exps.Add(New_Cat);
-            //EService.addExpense(New_Cat);
-            New_exp = string.Empty;
-        }
-
-    }
+    
     public void remove_exp(Expense todo)
     {
         Exps.Remove(todo);

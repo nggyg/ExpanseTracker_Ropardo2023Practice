@@ -3,6 +3,7 @@
 @using ExpanseTracker.Data.Models
 @using ExpanseTracker.Services;
 @inject CategoryService CServise;
+@inject NavigationManager NavMag;
 
 <h3>Categories</h3>
 
@@ -12,6 +13,7 @@
         <tr>
             <td>@cat.Id @cat.Name</td>
             <td><button @onclick="()=>remove_cat(cat)">delete</button></td> <!--lambda for function with parameter-->
+            <td><button @onclick="()=>goToExpenses(cat.Id)">View Expenses</button></td>
         </tr>
     }
 </table>
@@ -38,6 +40,10 @@
     private int get_new_id()
     {
         return New_id++;
+    }
+    public void goToExpenses(int id)
+    {
+        NavMag.NavigateTo("/expensecategory/" + id);
     }
     public void add_cat()
     {

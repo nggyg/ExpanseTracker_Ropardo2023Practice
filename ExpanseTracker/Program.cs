@@ -13,6 +13,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ExpenseService>();
+builder.Services.AddScoped<IncomeService>();
 
 builder.Services.AddDbContext<ExpanseTrackerContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExpanseTrackerDatabase")));
