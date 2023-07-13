@@ -1,4 +1,5 @@
-﻿
+﻿using ExpanseTracker.Services;
+
 namespace ExpanseTracker.Data.Models
 {
     public class Expense
@@ -9,6 +10,23 @@ namespace ExpanseTracker.Data.Models
         public double Amount { get; set; }
         public bool Planned { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
+        public Category Category { get; set; }
+        public void assignContetCategory(ExpanseTrackerContext context,int id)
+        {
+            CategoryService CS=new(context);
+            CategoryId = id;
+            Category = CS.getCategory(id);
+        }
+        public Expense() { }
+        
+        public Expense(int id, string title, DateTime date, double amount, bool planned)
+        {
+            Id = id;
+            Title = title;
+            Date = date;
+            Amount = amount;
+            Planned = planned;
+        }
+        
     }
 }

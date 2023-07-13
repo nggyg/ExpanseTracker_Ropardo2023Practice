@@ -25,5 +25,9 @@ namespace ExpanseTracker.Services
             _context.Categories.Remove(category);
             _context.SaveChanges();
         }
+        public Category getCategory(int id)
+        {
+            return _context.Categories.Find(id);
+        }
     }
 }

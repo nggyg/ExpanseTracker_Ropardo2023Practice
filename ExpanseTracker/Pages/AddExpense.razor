@@ -1,0 +1,86 @@
+﻿@page "/expenses/new"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject ExpenseService EService;
+@inject CategoryService CService;
+
+<h3>AddExpense</h3>
+
+<table>
+    <tr>
+        <td>Title</td>
+        <td><input type="text" placeholder="title" @bind="NTitle"></td>
+    </tr>
+    <tr>
+        <td>Date</td>
+        <td><input type="date" placeholder="dd-mm-yyyy" @bind="NDate"></td>
+    </tr>
+    <tr>
+        <td>Amount</td>
+        <td><input type="number" placeholder="0" @bind="NAmount"></td>
+    </tr>
+    <tr>
+        <td>Planned</td>
+        <td><input type="checkbox" placeholder="" @bind="NPlanned"></td>
+    </tr>
+    <tr>
+        <td align="justify">Category</td>
+        <td>
+            <table>
+                @foreach(var cat in Cats)
+                {
+                    <tr><td><input type="radio" name="1" @onchange="() => setCat(cat.Id)">@cat.Name</td></tr>
+                }
+            </table>
+        </td>
+    </tr>
+</table>
+<NavLink href="/expenses">
+<button @onclick="add">Save</button>
+</NavLink>
+@code {
+    public List<Category> Cats=new List<Category>();
+    public List<Expense> Exps=new List<Expense>();
+    public int New_id = 1;
+    public string NTitle;
+    public DateTime NDate;
+    public double NAmount;
+    public bool NPlanned;
+    public int NCat;
+    public void setCat(int id)
+    {
+        NCat = id;
+    }
+    private int get_new_id()
+    {
+        return New_id++;
+    }
+    public void add()
+    {
+        if (!string.IsNullOrWhiteSpace(NTitle))
+        {
+            Expense e = new Expense(get_new_id(), NTitle, DateTime.Parse(NDate.ToString()), NAmount, NPlanned);
+
+            e.assignContetCategory(CService._context, NCat);
+            Exps.Add(e);
+            EService.addExpense(e);
+            NTitle = string.Empty;
+            NAmount = 0;
+            NPlanned = false;
+            NCat = 0;
+            NDate = DateTime.Parse("1-1-2000");
+        }
+    }
+    private void loadDefault()
+    {
+        Cats = CService.getCategories();
+        Exps = EService.getExpenses();
+        var query = EService._context.Expenses.Max(c => c.Id);
+        New_id = query + 1;
+    }
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        loadDefault();
+    }
+}

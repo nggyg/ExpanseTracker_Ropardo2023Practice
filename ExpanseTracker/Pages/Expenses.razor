@@ -1,0 +1,74 @@
+﻿@page "/expenses"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject ExpenseService EService;
+@inject NavigationManager NavManager;
+
+<h3>Expenses</h3>
+<table>
+    @foreach(var exp in Exps)
+    {
+        <tr>
+            <td>@exp.Id</td>
+            <td>@exp.Title</td>
+            <td>@exp.Amount</td>
+            <td>@exp.Date.ToString("dd-mm-yyyy")</td>
+            <td>
+                @if (@exp.Planned)
+                {
+                    <h10>planned</h10>
+                }
+                else
+                {
+                    <h10>unplanned</h10>
+                }
+            </td>
+            <td><button @onclick="()=>remove_exp(exp)"> Delete</button></td>
+        </tr>
+    }
+</table>
+
+<NavLink href="/expenses/new">
+    <button onclick="goToAddNew">Add Expense</button>
+</NavLink>
+
+
+@code {
+    private List<Expense> Exps = new List<Expense>();
+    private int New_id = 1;
+    public string? New_exp;
+
+    private int get_new_id() => New_id++;
+    public void add_exp()
+    {
+        if (!string.IsNullOrWhiteSpace(New_exp))
+        {
+            //Expense New_Cat = new(get_new_id(), New_exp);
+            //Exps.Add(New_Cat);
+            //EService.addExpense(New_Cat);
+            New_exp = string.Empty;
+        }
+
+    }
+    public void remove_exp(Expense todo)
+    {
+        Exps.Remove(todo);
+        EService.removeExpense(todo);
+    }
+    public void goToAddNew()
+    {
+        NavManager.NavigateTo("/new");
+    }
+    private void loadDefault()
+    {
+        Exps = EService.getExpenses();
+        var query = EService._context.Expenses.Max(c => c.Id);
+        New_id = query + 1;
+    }
+
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        loadDefault();
+    }
+}

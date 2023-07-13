@@ -1,8 +1,8 @@
 ﻿@page "/categories"
 @using ExpanseTracker.Data
 @using ExpanseTracker.Data.Models
-@using ExpanseTracker.Services
-@inject CategoryService CategoryService;
+@using ExpanseTracker.Services;
+@inject CategoryService CServise;
 
 <h3>Categories</h3>
 
@@ -11,7 +11,7 @@
     {
         <tr>
             <td>@cat.Id @cat.Name</td>
-            <td><button @onclick="()=>remove_cat(cat)">delete</button></td> <!--lambda fro function with parameter-->
+            <td><button @onclick="()=>remove_cat(cat)">delete</button></td> <!--lambda for function with parameter-->
         </tr>
     }
 </table>
@@ -35,7 +35,6 @@
         Cats.Add(new(get_new_id(), "House"));
         Cats.Add(new(get_new_id(), "Entertainment"));
     }
-
     private int get_new_id()
     {
         return New_id++;
@@ -46,7 +45,7 @@
         {
             Category New_Cat = new(get_new_id(), New_cat);
             Cats.Add(New_Cat);
-            CategoryService.addCategory(New_Cat);
+            CServise.addCategory(New_Cat);
             New_cat = string.Empty;
         }
 
@@ -54,21 +53,19 @@
     public void remove_cat(Category todo)
     {
         Cats.Remove(todo);
-        CategoryService.removeCategory(todo);
+        CServise.removeCategory(todo);
     }
 
     private void loadDefault2()
     {
-        Cats = CategoryService.getCategories();
-        var query = CategoryService._context.Categories.Max(c => c.Id);
-        Console.WriteLine(query);
+        Cats = CServise.getCategories();
+        var query = CServise._context.Categories.Max(c => c.Id);
         New_id = query+1;
         //New_id=
     }
 
     protected override async Task OnInitializedAsync() //process to run when page is loaded
     {
-        //loadDefault();
         loadDefault2();
     }
 }

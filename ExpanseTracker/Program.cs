@@ -12,13 +12,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ExpenseService>();
 
 builder.Services.AddDbContext<ExpanseTrackerContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("ExpanseTrackerDatabase")));
 
 var app = builder.Build();
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
+//AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
