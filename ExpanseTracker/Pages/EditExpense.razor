@@ -1,0 +1,32 @@
+﻿@page "/expenses/{expenseId:int}"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject ExpenseService EService;
+@inject CategoryService CService;
+@inject NavigationManager NavMag;
+
+<h3>EditExpense</h3>
+
+<form @onsubmit="EdExpense">
+    <ExpenseForm Exp="Exp"></ExpenseForm>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@code {
+    [Parameter]
+    public int expenseId { get; set; }
+
+    private Expense Exp = new Expense();
+
+    protected override void OnInitialized()
+    {
+        Exp = EService.getExpense(expenseId);
+    }
+
+    public void EdExpense()
+    {
+        EService.updateExpense(Exp);
+        NavMag.NavigateTo("/expenses");
+    }
+}

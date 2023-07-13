@@ -28,5 +28,15 @@ namespace ExpanseTracker.Data.Models
             Planned = planned;
         }
         
+        public override string ToString()
+        {
+            return Id+" "+Title+" "+Date.ToString()+" " + Amount + " " + Planned + " " + CategoryId;
+        }
+        public bool isEmpty()
+        {
+            if(Id==0 && String.IsNullOrEmpty(Title)) 
+                return true;
+            return false;
+        }
     }
 }

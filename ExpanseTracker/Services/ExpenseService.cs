@@ -26,6 +26,17 @@ namespace ExpanseTracker.Services
             _context.Expenses.Remove(expense);
             _context.SaveChanges();
         } 
+        public void updateExpense(Expense exp) 
+        {
+            _context.Expenses.Remove(_context.Expenses.Find(exp.Id));
+            _context.SaveChanges();
+            _context.Expenses.Add(exp);
+            _context.SaveChanges();
+        }
+        public Expense getExpense(int id)
+        {
+            return _context.Expenses.Find(id);
+        }
         
     }
 }

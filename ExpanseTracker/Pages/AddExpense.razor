@@ -4,9 +4,11 @@
 @using ExpanseTracker.Services;
 @inject ExpenseService EService;
 @inject CategoryService CService;
+@inject NavigationManager NavMag;
 
 <h3>AddExpense</h3>
 
+<!--
 <table>
     <tr>
         <td>Title</td>
@@ -36,41 +38,29 @@
         </td>
     </tr>
 </table>
-<NavLink href="/expenses">
-<button @onclick="add">Save</button>
-</NavLink>
+-->
+<form @onsubmit="AdExpense">
+    <ExpenseForm Exp="Exp"></ExpenseForm>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
 @code {
     public List<Category> Cats=new List<Category>();
     public List<Expense> Exps=new List<Expense>();
     public int New_id = 1;
-    public string NTitle;
-    public DateTime NDate;
-    public double NAmount;
-    public bool NPlanned;
-    public int NCat;
+    private Expense Exp = new Expense();
+
     public void setCat(int id)
     {
-        NCat = id;
+        Exp.Id = id;
     }
     private int get_new_id()
     {
         return New_id++;
     }
-    public void add()
+    public void AdExpense()
     {
-        if (!string.IsNullOrWhiteSpace(NTitle))
-        {
-            Expense e = new Expense(get_new_id(), NTitle, DateTime.Parse(NDate.ToString()), NAmount, NPlanned);
-
-            e.assignContetCategory(CService._context, NCat);
-            Exps.Add(e);
-            EService.addExpense(e);
-            NTitle = string.Empty;
-            NAmount = 0;
-            NPlanned = false;
-            NCat = 0;
-            NDate = DateTime.Parse("1-1-2000");
-        }
+        EService.addExpense(Exp);
+        NavMag.NavigateTo("/expenses");
     }
     private void loadDefault()
     {

@@ -25,13 +25,14 @@
                 }
             </td>
             <td><button @onclick="()=>remove_exp(exp)"> Delete</button></td>
+            <td><button @onclick="()=>goToEdit(exp.Id)"> Edit</button></td>
         </tr>
     }
 </table>
 
-<NavLink href="/expenses/new">
-    <button onclick="goToAddNew">Add Expense</button>
-</NavLink>
+
+<button @onclick="goToAddNew">Add Expense</button>
+
 
 
 @code {
@@ -58,11 +59,15 @@
     }
     public void goToAddNew()
     {
-        NavManager.NavigateTo("/new");
+        NavManager.NavigateTo("/expenses/new");
+    }
+    public void goToEdit(int id)
+    {
+        NavManager.NavigateTo("/expenses/"+id);
     }
     private void loadDefault()
     {
-        Exps = EService.getExpenses();
+        Exps = EService.getExpenses().OrderBy(e=>e.Id).ToList();
         var query = EService._context.Expenses.Max(c => c.Id);
         New_id = query + 1;
     }
