@@ -1,12 +1,83 @@
 ﻿@page "/"
+@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject CategoryService CService;
+@inject ExpenseService EService;
+@inject IncomeService IService
+@inject NavigationManager NavMag;
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Expense Tracker</h1>
+<h5>
+    Your total Income: @Incs.Sum(a=>a.Amount)
+    over @getIncomeTimeFrameString()</h5>
 
-Welcome to your new app.
+<h5>
+    Your total Expenses: @Exps.Sum(a=>a.Amount)
+    over @getExpenseTimeFrameString()</h5>
+<h5>Your Income this month: @Incs.Where(a => a.Date.Month == DateTime.Now.Month && a.Date.Year == DateTime.Now.Year).Sum(a=>a.Amount)</h5>
+<h5>Your Expense this month: @Exps.Where(a => a.Date.Month == DateTime.Now.Month && a.Date.Year == DateTime.Now.Year).Sum(a=>a.Amount)</h5>
+@if (@Balance > 0)
+{
+    <h3 style="color:green;">@Balance</h3>
+}
+else
+{
+    <h3 style="color:red;">@Balance</h3>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h5>Planned Expenses: @Exps.Where(a=>a.Planned).Sum(a=>a.Amount)</h5>
+<h5>Unplanned Expenses:  @Exps.Where(a=>!a.Planned).Sum(a=>a.Amount)</h5>
+
+@code{
+    public List<Expense> Exps=new();
+    public List<Income> Incs=new();
+    public double Balance;
+
+    private void loadDefault()
+    {
+        Exps = EService.getExpenses();
+        Incs = IService.getIncomes();
+        Balance = getSumIncomes() - getSumExpenses();
+    }
+    public double getSumIncomes()
+    {
+        return Incs.ToArray().Select((a) => new { nr = a.Amount }).Aggregate(0.0, (a, b) => false ? a : a + b.nr);
+    }
+    public double getSumExpenses()
+    {
+        return Exps.ToArray().Select((a) => new { nr = a.Amount }).Aggregate(0.0, (a, b) => false ? a : a + b.nr);
+    }
+    public string getIncomeTimeFrameString()
+    {
+        string tf = "";
+        tf += Incs.ToArray().Select((a) => new { date = a.Date }).Aggregate(DateTime.Now, (a, b) => a < b.date ? a : b.date).ToString("dd-MM-yyyy");
+        tf += " - ";
+        tf += Incs.ToArray().Select((a) => new { date = a.Date }).Aggregate(DateTime.Now, (a, b) => a > b.date ? a : b.date).ToString("dd-MM-yyyy");
+        return tf;
+    }
+    public string getExpenseTimeFrameString()
+    {
+        string tf = "";
+        tf += Exps.ToArray().Select((a) => new { date = a.Date }).Aggregate(DateTime.Now, (a, b) => a < b.date ? a : b.date).ToString("dd-MM-yyyy");
+        tf += " - ";
+        tf += Exps.ToArray().Select((a) => new { date = a.Date }).Aggregate(DateTime.Now, (a, b) => a > b.date ? a : b.date).ToString("dd-MM-yyyy");
+        return tf;
+    }
+    public double getSumIncomesCurrentMonth()
+    {
+        return Incs.ToArray().Where(a => a.Date.Month == DateTime.Now.Month && a.Date.Year == DateTime.Now.Year).Select((a) => new { nr = a.Amount }).Aggregate(0.0, (a, b) => false ? a : a + b.nr);
+    }
+    public double getSumExpensesCurrentMonth()
+    {
+        return Exps.ToArray().Where(a => a.Date.Month == DateTime.Now.Month && a.Date.Year == DateTime.Now.Year).Select((a) => new { nr = a.Amount }).Aggregate(0.0, (a, b) => false ? a : a + b.nr);
+    }
+    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    {
+        loadDefault();
+    }
+}
 
 
-<Counter />

@@ -1,11 +1,28 @@
 ﻿@page "/expenses"
+@page "/expenses/{planned:bool}"
 @using ExpanseTracker.Data
 @using ExpanseTracker.Data.Models
 @using ExpanseTracker.Services;
 @inject ExpenseService EService;
 @inject NavigationManager NavManager;
 
-<h3>Expenses</h3>
+<table>
+    <tr>
+        <td>
+            <h3>Expenses</h3>
+        </td>
+        <td>
+            <InputSelect id="Planned" @bind-Value="@planned" title="null">
+                <option value="null" @onclick='()=>NavManager.NavigateTo("/expenses")'>All</option>
+                <option value="True" @onclick='()=>NavManager.NavigateTo("/expenses/True")'>Planned</option>
+                <option value="False" @onclick='()=>NavManager.NavigateTo("/expenses/False")'>Unplanned</option>
+                
+            </InputSelect>
+        </td>
+    </tr>
+</table>
+
+@if(@planned==null){
 <table>
     @foreach(var exp in Exps)
     {
@@ -13,7 +30,7 @@
             <td>@exp.Id</td>
             <td>@exp.Title</td>
             <td>@exp.Amount</td>
-            <td>@exp.Date.ToString("dd-mm-yyyy")</td>
+            <td>@exp.Date.ToString("dd-MM-yyyy")</td>
             <td>
                 @if (@exp.Planned)
                 {
@@ -25,44 +42,101 @@
                 }
             </td>
             <td><button @onclick="()=>remove_exp(exp)"> Delete</button></td>
-            <td><button @onclick="()=>goToEdit(exp.Id)"> Edit</button></td>
+            <td><button @onclick='()=>NavManager.NavigateTo("/editexpenses/"+exp.Id)'> Edit</button></td>
         </tr>
     }
 </table>
 
+<h6> Total spent: @Exps.Sum(a=>a.Amount)</h6>
+}
+@if (@planned == true)
+{
+    <table>
+        @foreach (var exp in Exps.Where(a=>a.Planned))
+        {
+            <tr>
+                <td>@exp.Id</td>
+                <td>@exp.Title</td>
+                <td>@exp.Amount</td>
+                <td>@exp.Date.ToString("dd-MM-yyyy")</td>
+                <td>
+                    @if (@exp.Planned)
+                    {
+                        <h10>planned</h10>
+                    }
+                    else
+                    {
+                        <h10>unplanned</h10>
+                    }
+                </td>
+                <td><button @onclick="()=>remove_exp(exp)"> Delete</button></td>
+                <td><button @onclick='()=>NavManager.NavigateTo("/editexpenses/"+exp.Id)'> Edit</button></td>
+            </tr>
+        }
+    </table>
+    <h6> Total spent: @Exps.Where(a=>a.Planned).Sum(a=>a.Amount)</h6>
 
-<button @onclick="goToAddNew">Add Expense</button>
+}
+@if (@planned == false)
+{
+    <table>
+        @foreach (var exp in Exps.Where(a=>!a.Planned))
+        {
+            <tr>
+                <td>@exp.Id</td>
+                <td>@exp.Title</td>
+                <td>@exp.Amount</td>
+                <td>@exp.Date.ToString("dd-MM-yyyy")</td>
+                <td>
+                    @if (@exp.Planned)
+                    {
+                        <h10>planned</h10>
+                    }
+                    else
+                    {
+                        <h10>unplanned</h10>
+                    }
+                </td>
+                <td><button @onclick="()=>remove_exp(exp)"> Delete</button></td>
+                <td><button @onclick='()=>NavManager.NavigateTo("/editexpenses/"+exp.Id)'> Edit</button></td>
+            </tr>
+        }
+    </table>    
+    <h6> Total spent: @Exps.Where(a=>!a.Planned).Sum(a=>a.Amount)</h6>
+
+}
+
+
+<button @onclick='()=>NavManager.NavigateTo("/expenses/new")'>Add Expense</button>
 
 
 
 @code {
     private List<Expense> Exps = new List<Expense>();
     private int New_id = 1;
+    [Parameter]
+    public bool? planned { get; set; } = null;
 
-    private int get_new_id() => New_id++;
-    
     public void remove_exp(Expense todo)
     {
         Exps.Remove(todo);
         EService.removeExpense(todo);
     }
-    public void goToAddNew()
-    {
-        NavManager.NavigateTo("/expenses/new");
-    }
-    public void goToEdit(int id)
-    {
-        NavManager.NavigateTo("/expenses/"+id);
-    }
+
+
     private void loadDefault()
     {
-        Exps = EService.getExpenses().OrderBy(e=>e.Id).ToList();
-        var query = EService._context.Expenses.Max(c => c.Id);
-        New_id = query + 1;
+        Exps = EService.getExpenses().OrderBy(e => e.Id).ToList();
+        New_id = Exps.Max(a=>a.Id) + 1;
     }
 
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    protected override void OnInitialized() //process to run when page is loaded
     {
         loadDefault();
+        if (planned == true)
+            Exps = Exps.Where(a => a.Planned).ToList();
+        if (planned == false)
+            Exps = Exps.Where(a => !a.Planned).ToList();
     }
+
 }

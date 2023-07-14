@@ -1,0 +1,99 @@
+﻿@using ExpanseTracker.Data
+@using ExpanseTracker.Data.Models
+@using ExpanseTracker.Services;
+@inject IncomeService IService;
+@inject NavigationManager NavManager;
+
+
+@if(@StartDate!=null && @EndDate != null)
+{
+    <table>
+        @foreach (var inc in Incs.Where(i => i.Date >= @StartDate).Where(i => i.Date <= @EndDate))
+        {
+            <tr>
+                <td>@inc.Id</td>
+                <td>@inc.Title</td>
+                <td>@inc.Date.ToString("dd-MM-yyyy")</td>
+                <td>@inc.Amount $</td>
+                <td>@inc.Type</td>
+                <td><button @onclick="()=>remove_inc(inc)">Delete</button></td>
+                <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
+            </tr>
+        }
+    </table>
+}
+@if(@StartDate!=null && @EndDate == null)
+{
+    <table>
+        @foreach (var inc in Incs.Where(i=>i.Date>=@StartDate))
+        {
+            <tr>
+                <td>@inc.Id</td>
+                <td>@inc.Title</td>
+                <td>@inc.Date.ToString("dd-MM-yyyy")</td>
+                <td>@inc.Amount $</td>
+                <td>@inc.Type</td>
+                <td><button @onclick="()=>remove_inc(inc)">Delete</button></td>
+                <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
+            </tr>
+        }
+    </table>
+}
+@if(@StartDate==null && @EndDate != null)
+{
+    <table>
+        @foreach (var inc in Incs.Where(i=>i.Date<=@EndDate))
+        {
+            <tr>
+                <td>@inc.Id</td>
+                <td>@inc.Title</td>
+                <td>@inc.Date.ToString("dd-MM-yyyy")</td>
+                <td>@inc.Amount $</td>
+                <td>@inc.Type</td>
+                <td><button @onclick="()=>remove_inc(inc)">Delete</button></td>
+                <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
+            </tr>
+        }
+    </table>
+}
+@if(@StartDate==null && @EndDate == null)
+{
+    <table>
+        @foreach (var inc in Incs)
+        {
+            <tr>
+                <td>@inc.Id</td>
+                <td>@inc.Title</td>
+                <td>@inc.Date.ToString("dd-MM-yyyy")</td>
+                <td>@inc.Amount $</td>
+                <td>@inc.Type</td>
+                <td><button @onclick="()=>remove_inc(inc)">Delete</button></td>
+                <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
+            </tr>
+        }
+    </table>
+}
+
+
+
+@code {
+    [Parameter]
+    public DateTime? StartDate { get; set; } = null;
+    [Parameter]
+    public DateTime? EndDate { get; set; } = null;
+    public List<Income> Incs = new List<Income>();
+    public void remove_inc(Income todo)
+    {
+        Incs.Remove(todo);
+        IService.removeIncome(todo);
+    }
+    public void goToEdit(int id)
+    {
+        NavManager.NavigateTo("/editincome/" + id);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        Incs = IService.getIncomes();
+    }
+
+}
