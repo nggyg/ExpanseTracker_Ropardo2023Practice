@@ -21,6 +21,8 @@
             </tr>
         }
     </table>
+    <h5>Total Amount earned: @Incs.Where(i => i.Date >= @StartDate).Where(i => i.Date <= @EndDate).Sum(a=>a.Amount)</h5>
+
 }
 @if(@StartDate!=null && @EndDate == null)
 {
@@ -38,6 +40,7 @@
             </tr>
         }
     </table>
+    <h5>Total Amount earned: @Incs.Where(i=>i.Date>=@StartDate).Sum(a=>a.Amount)</h5>
 }
 @if(@StartDate==null && @EndDate != null)
 {
@@ -55,6 +58,8 @@
             </tr>
         }
     </table>
+    <h5>Total Amount earned: @Incs.Where(i=>i.Date<=@EndDate).Sum(a=>a.Amount)</h5>
+
 }
 @if(@StartDate==null && @EndDate == null)
 {
@@ -71,7 +76,9 @@
                 <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
             </tr>
         }
-    </table>
+    </table>    
+    <h5>Total Amount earned: @Incs.Sum(a=>a.Amount)</h5>
+
 }
 
 
@@ -91,7 +98,7 @@
     {
         NavManager.NavigateTo("/editincome/" + id);
     }
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Incs = IService.getIncomes();
     }

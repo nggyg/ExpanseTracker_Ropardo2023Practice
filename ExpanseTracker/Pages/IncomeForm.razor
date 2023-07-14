@@ -68,7 +68,7 @@
         var query = IService._context.Incomes.Max(c => c.Id);
         New_id = query + 1;
     }
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    protected override void OnInitialized() //process to run when page is loaded
     {
         NInc = Inc;
         NInc.Date = DateTime.UtcNow;

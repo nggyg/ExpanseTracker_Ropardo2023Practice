@@ -60,7 +60,7 @@
         var query = EService._context.Expenses.Max(c => c.Id);
         New_id = query + 1;
     }
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    protected override void OnInitialized() //process to run when page is loaded
     {
         NExp = Exp;
         NExp.Date = DateTime.UtcNow;

@@ -31,15 +31,31 @@ else
 <h5>Planned Expenses: @Exps.Where(a=>a.Planned).Sum(a=>a.Amount)</h5>
 <h5>Unplanned Expenses:  @Exps.Where(a=>!a.Planned).Sum(a=>a.Amount)</h5>
 
+<h5>Most Expensive Expense Category: @CatExps.Find(c=>c.Item2==@CatExps.Max(c=>c.Item2)).Item1.Name</h5>
+<!--
+<table>
+@foreach(var item in @CatExps)
+{
+    <tr>
+        <td>@item.Item1.Id</td>
+        <td>@item.Item1.Name</td>
+        <td>@item.Item2</td>
+    </tr>
+}
+</table>
+-->
 @code{
     public List<Expense> Exps=new();
     public List<Income> Incs=new();
+    public List<Category> Cats=new();
+    public List<(Category, double)> CatExps = new();
     public double Balance;
 
     private void loadDefault()
     {
         Exps = EService.getExpenses();
         Incs = IService.getIncomes();
+        Cats = CService.getCategories();
         Balance = getSumIncomes() - getSumExpenses();
     }
     public double getSumIncomes()
@@ -74,9 +90,25 @@ else
     {
         return Exps.ToArray().Where(a => a.Date.Month == DateTime.Now.Month && a.Date.Year == DateTime.Now.Year).Select((a) => new { nr = a.Amount }).Aggregate(0.0, (a, b) => false ? a : a + b.nr);
     }
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    protected override void OnInitialized()
     {
         loadDefault();
+        double sum;
+        bool found;
+        foreach(var cat in Cats)
+        {
+            sum = 0;
+            foreach(var exp in Exps)
+            {
+                if (exp.CategoryId == cat.Id)
+                {
+                    sum += exp.Amount;
+
+                }
+            }
+            if (sum > 0)
+                CatExps.Add(new(cat, sum));
+        }
     }
 }
 

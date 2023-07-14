@@ -14,25 +14,9 @@
     </tr>
 </table>
 
-<!--<table>
-    @foreach(var inc in Incs)
-    {
-        <tr>
-            <td>@inc.Id</td>
-            <td>@inc.Title</td>
-            <td>@inc.Date.ToString("dd-MM-yyyy")</td>
-            <td>@inc.Amount $</td>
-            <td>@inc.Type</td>
-            <td><button @onclick="()=>remove_inc(inc)">Delete</button></td>
-            <td><button @onclick="()=>goToEdit(inc.Id)">Edit</button></td>
-        </tr>
-    }
-</table>-->
+
 <IncomeDisplayForm StartDate="SDate" EndDate="EDate"></IncomeDisplayForm>
 <button @onclick="goToAdd">Add Income</button>
-
-<h5>@SDate</h5>
-<h5>@EDate</h5>
 
 @code {
     private List<Income> Incs = new List<Income>();
@@ -62,7 +46,7 @@
         New_id = query + 1;
     }
 
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    protected override void OnInitialized()
     {
         loadDefault();
     }

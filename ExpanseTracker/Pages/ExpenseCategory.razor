@@ -41,7 +41,7 @@
         Cats = CService.getCategories();
         Exps = EService.getExpenses();
     }
-    protected override async Task OnInitializedAsync() //process to run when page is loaded
+    protected override void OnInitialized()
     {
         loadDefault();
     }

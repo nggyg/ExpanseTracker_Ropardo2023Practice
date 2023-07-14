@@ -41,6 +41,7 @@
                     <h10>unplanned</h10>
                 }
             </td>
+            <td>@exp.CategoryId</td>
             <td><button @onclick="()=>remove_exp(exp)"> Delete</button></td>
             <td><button @onclick='()=>NavManager.NavigateTo("/editexpenses/"+exp.Id)'> Edit</button></td>
         </tr>
