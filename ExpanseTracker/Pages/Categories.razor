@@ -3,15 +3,23 @@
 @using ExpanseTracker.Data.Models
 @using ExpanseTracker.Services;
 @inject CategoryService CServise;
+@inject ExpenseService EService;
 @inject NavigationManager NavMag;
 
 <h3>Categories</h3>
 
 <table><!--table instead of list for organized layout-->
+    <thead>
+        <td>Id</td>
+        <td>Name</td>
+        <td>Avarage Spending</td>
+    </thead>
     @foreach(var cat in Cats)
     {
         <tr>
-            <td>@cat.Id @cat.Name</td>
+            <td>@cat.Id </td>
+            <td>@cat.Name</td>
+            <td>@getAvgSpending(cat.Id)</td>
             <td><button @onclick="()=>remove_cat(cat)">delete</button></td> <!--lambda for function with parameter-->
             <td><button @onclick="()=>goToExpenses(cat.Id)">View Expenses</button></td>
         </tr>
@@ -24,6 +32,7 @@
 
 @code {
     private List<Category> Cats = new List<Category>();
+    public List<Expense> Exps = new();
     private int New_id = 1;
     public string? New_cat;
     /*  can't call functionf from outside function definition in @code
@@ -40,6 +49,22 @@
     private int get_new_id()
     {
         return New_id++;
+    }
+    public double getAvgSpending(int id)
+    {
+        double avg = 0;
+        double ct = 0;
+        foreach(var exp in Exps)
+        {
+            if (exp.CategoryId == id)
+            {
+                avg += exp.Amount;
+                ct++;
+            }
+        }
+        if (ct > 0)
+            return avg / ct;
+        return 0;
     }
     public void goToExpenses(int id)
     {
@@ -64,6 +89,7 @@
 
     private void loadDefault2()
     {
+        Exps = EService.getExpenses();
         Cats = CServise.getCategories();
         var query = CServise._context.Categories.Max(c => c.Id);
         New_id = query+1;
